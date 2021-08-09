@@ -39,11 +39,6 @@ private:
     if (nodo)
     {
       return achaMax(achaAltura(nodo->filhoEsquerda), achaAltura(nodo->filhoDireita)) + 1;
-      /*
-      Aqui utilizamos a recursão para calcular a altura da tree, basicamente, sempre que ele achar um nodo verdadeiro ele vai 
-      somar um e chamar a mesma função para os seus filhos, caso eles forem verdadeiros vai adicionar um, ai por diante, pros 
-      filhos dos filhos ..., se o nodo for nulo, ele retorna 0, não adicionando nada na altura
-      */
     }
     else
       return 0;
@@ -54,44 +49,38 @@ private:
     if (raiz)
     {
       return 1 + quantidade_de_elementos(raiz->filhoEsquerda) + quantidade_de_elementos(raiz->filhoDireita);
-      /*
-      Aqui utilizamos a recursividade para encontrar a quantidade de elementos, basicamente, chamamos a função mandando a raiz,
-      daí, ela verifica se essa raiz existe, se existir, soma 1 e chama a mesma função para ambos os filhos, caso os filhos 
-      existam, ela soma para cada um existente e chama para os netos, assim em diante ..., caso em algum momento um nodo seja nulo
-      será retornado 0, não alterando na quantidade de elementos
-      */
     }
     else
     {
       return 0;
     }
   };
-  void inOrder(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
+  void emOrdemm(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
   {
     if (a)
     {
-      inOrder(a->filhoEsquerda, teste);
+      emOrdemm(a->filhoEsquerda, teste);
       teste->adicionaNoFim(a->chave);
-      inOrder(a->filhoDireita, teste);
+      emOrdemm(a->filhoDireita, teste);
     }
   };
-  void postOrder(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
+  void posOrdemm(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
   {
     if (a)
     {
-      postOrder(a->filhoEsquerda, teste);
-      postOrder(a->filhoDireita, teste);
+      posOrdemm(a->filhoEsquerda, teste);
+      posOrdemm(a->filhoDireita, teste);
 
       teste->adicionaNoFim(a->chave);
     }
   };
-  void preOrder(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
+  void preOrdemm(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
   {
     if (a)
     {
       teste->adicionaNoFim(a->chave);
-      preOrder(a->filhoEsquerda, teste);
-      preOrder(a->filhoDireita, teste);
+      preOrdemm(a->filhoEsquerda, teste);
+      preOrdemm(a->filhoDireita, teste);
     }
   };
 
@@ -100,8 +89,7 @@ public:
   {
     ArvoreDeBuscaBinaria<T>::_raiz = NULL;
   };
-  ~MinhaArvoreDeBuscaBinaria(){
-  };
+  ~MinhaArvoreDeBuscaBinaria(){};
 
   bool vazia() const
   {
@@ -135,38 +123,32 @@ public:
     {
       return false;
     }
-    else
-    {
-      while (raiz_da_arvore)
-      {
-        if (raiz_da_arvore->chave == chave)
-        {
-          achei = true;
-          break;
-        }
-        else if (raiz_da_arvore->chave > chave)
-        {
-          raiz_da_arvore = raiz_da_arvore->filhoEsquerda;
-        }
-        else if (raiz_da_arvore->chave < chave)
-        {
-          raiz_da_arvore = raiz_da_arvore->filhoDireita;
-        }
-      }
-      if (achei == true)
-      {
-        return true;
-      }
-      else
-        return false;
-    }
-  };
 
-  /**
-     * @brief Retorna a altura da (sub)arvore
-     * @param chave chave que é raiz da (sub)arvore cuja altura queremos. Se chave é nula, retorna a altura da arvore.
-     * @return Numero inteiro representando a altura da (subarvore). Se chave nao esta na arvore, retorna std::nullopt
-     */
+    while (raiz_da_arvore)
+    {
+      if (raiz_da_arvore->chave == chave)
+      {
+        achei = true;
+        break;
+      }
+      else if (raiz_da_arvore->chave > chave)
+      {
+        raiz_da_arvore = raiz_da_arvore->filhoEsquerda;
+      }
+      else if (raiz_da_arvore->chave < chave)
+      {
+        raiz_da_arvore = raiz_da_arvore->filhoDireita;
+      }
+    }
+
+    if (achei == true)
+    {
+      return true;
+    }
+
+    else
+      return false;
+  };
 
   std::optional<int> altura(T chave) const
   {
@@ -219,13 +201,13 @@ public:
     return 0;
   };
 
-  void inserir(T chave) override 
+  void inserir(T chave) override
   {
-    bool inseriu = false;                   //Booleano para verificar se já foi inserido a chave;
-    Nodo<T> *novo_nodo = new Nodo<T>(); //Alocando o novo nodo
-    novo_nodo->chave = chave;               //Declarando a chave do novo nodo como a chave informada
-    novo_nodo->filhoDireita = nullptr;
-    novo_nodo->filhoEsquerda = nullptr;
+    bool inseriu = false;
+    Nodo<T> *novo_nodo = new Nodo<T>();
+    novo_nodo->chave = chave;
+    novo_nodo->filhoDireita = NULL;
+    novo_nodo->filhoEsquerda = NULL;
 
     Nodo<T> *raiz_da_arvore = ArvoreDeBuscaBinaria<T>::_raiz;
     if (raiz_da_arvore == NULL)
@@ -233,43 +215,34 @@ public:
       raiz_da_arvore = novo_nodo;
       ArvoreDeBuscaBinaria<T>::_raiz = novo_nodo;
     }
-    else
+
+    while (raiz_da_arvore and inseriu == false)
     {
-      while (raiz_da_arvore and inseriu == false)
+      if (raiz_da_arvore->chave == chave)
       {
-        if (raiz_da_arvore->chave == chave)
+      }
+      else if (raiz_da_arvore->chave < chave)
+      {
+        if (raiz_da_arvore->filhoDireita == NULL)
         {
-          //Caso seja igual não precimos inserir novamente
+          raiz_da_arvore->filhoDireita = novo_nodo;
+          inseriu = true;
         }
-        else if (raiz_da_arvore->chave < chave)
+        else
         {
-          //Verificando se a chave da raiz é menor que a chave informada, então, nos moveremos para a direita
-          if (raiz_da_arvore->filhoDireita == NULL)
-          {
-            //Caso o filho a direita já seja nulo, já adicionamos o nodo na tree
-            raiz_da_arvore->filhoDireita = novo_nodo; //Setando o filho da direita do nodo para a chave
-            inseriu = true; //Setando booleano inseriu para true, daí quebrando o loop
-          }
-          else
-          {
-            //Se não for nulo, vamos continuar nos movento através da tree
-            raiz_da_arvore = raiz_da_arvore->filhoDireita;
-          }
+          raiz_da_arvore = raiz_da_arvore->filhoDireita;
         }
-        else if (raiz_da_arvore->chave > chave)
+      }
+      else if (raiz_da_arvore->chave > chave)
+      {
+        if (raiz_da_arvore->filhoEsquerda == NULL)
         {
-          //Como a chave é menor que a chave do nodo, iremos olhar para a esquerda
-          if (raiz_da_arvore->filhoEsquerda == NULL)
-          {
-            //Se o nodo a esquerda for nulo já iremos inserir na tree
-            raiz_da_arvore->filhoEsquerda = novo_nodo; //Setando o nodo nulo para o desejado a ser inserido
-            inseriu = true; //Booleano setado para true como já inserimos o valor 
-          }
-          else
-          {
-            //Redirecionando para o lado esquerdo da tree
-            raiz_da_arvore = raiz_da_arvore->filhoEsquerda; 
-          }
+          raiz_da_arvore->filhoEsquerda = novo_nodo;
+          inseriu = true;
+        }
+        else
+        {
+          raiz_da_arvore = raiz_da_arvore->filhoEsquerda;
         }
       }
     }
@@ -279,52 +252,27 @@ public:
   {
     bool deletou = false;
     Nodo<T> *raiz = ArvoreDeBuscaBinaria<T>::_raiz;
-    if (raiz->chave == chave and raiz->filhoEsquerda == nullptr and raiz->filhoDireita == nullptr)
+    if (raiz->chave == chave and raiz->filhoEsquerda == NULL and raiz->filhoDireita == NULL)
     {
-      /*
-      Primeiro, verificamos se a raiz da árvore é o nodo a ser deletado e se seus filhos são ponteiros nulos
-      Daí, deletamos a raiz e setamos ela para nula e retornamos a função void.
-      */
       delete raiz;
       raiz = NULL;
-      ArvoreDeBuscaBinaria<T>::_raiz = NULL;
       return;
     }
     while (raiz and deletou == false)
     {
-      /*
-      Loop enquanto a raiz verdadeira e o booleano deletou é falso.
-      */
       if (raiz->chave == chave)
       {
-        /*
-        Aqui, verificamos inicialmente se o nodo é a chave a ser deletada.
-        */
         if (raiz->filhoDireita and raiz->filhoDireita->filhoEsquerda)
         {
-          /*
-          Primeiro, verificamos se a raiz tem um filho a direita, então, se o filho a direita tem um filho a esquerda,
-          fazemos isso porque assim garantimos que as regras da tree são seguidas, os filhos a esquerda da raiz ainda
-          são menores que o neto em questão, então, iremos tornar ele a raiz porque ainda cumprimos as regras da tree.
-          */
-         // NOTA
-         // Aqui o ideal seria rodarmos um loop para encontrar o filho mais a esquerda do elemento a direita da raiz, porque
-         // assim encontrariamos o menor valor que ainda é maior que a raiz e cumpre as regras, aqui eu peguei logo o seguinte
-         // mas para o código ser funcional em 100% dos casos deveriamos mudar isso 
-
-          int chave_nova = raiz->filhoDireita->filhoEsquerda->chave; //Pegando a chave do neto
-          delete raiz->filhoDireita->filhoEsquerda; //Deletando o neto
-          raiz->filhoDireita->filhoEsquerda = NULL; //Tornando o neto como nulo
-          raiz->chave = chave_nova; //Trocando a chave da raiz para a chave do neto
-          deletou = true; //Setando o booleano deletou para true
-          break; //Saindo
+          int chave_nova = raiz->filhoDireita->filhoEsquerda->chave;
+          delete raiz->filhoDireita->filhoEsquerda;                 
+          raiz->filhoDireita->filhoEsquerda = NULL;                 
+          raiz->chave = chave_nova;                                  
+          deletou = true;                                            
+          break;                                                    
         }
         else if (raiz->filhoDireita and raiz->filhoDireita->filhoDireita)
         {
-          /*
-          Nesse caso, queremos deletar a raiz, contudo, ela tem um filho a direita, que tem um filho a direita, então, pegamos
-          os dados do neto, e deletamos e setamos ele para nulo, após isso, a raiz recebe os dados do filho e o filho do neto.
-          */
           int chave_nova = raiz->filhoDireita->chave;
           int outra_chave = raiz->filhoDireita->filhoDireita->chave;
           delete raiz->filhoDireita->filhoDireita;
@@ -357,7 +305,6 @@ public:
           Nodo<T> *filho_do_nodo_a_ser_deletado = raiz->filhoDireita->filhoEsquerda;
           delete raiz->filhoDireita;
           raiz->filhoDireita = filho_do_nodo_a_ser_deletado;
-          //Assim deletamos o nodo e como esse nodo só tinha um filho, agora o avô toma conta dele
           break;
         }
         else if (raiz->filhoDireita->filhoDireita != NULL and raiz->filhoDireita->filhoEsquerda == NULL)
@@ -489,27 +436,27 @@ public:
 
   ListaEncadeadaAbstrata<T> *emOrdem() const
   {
-    ListaEncadeadaAbstrata<int> *p = new MinhaListaEncadeada<int>;
+    ListaEncadeadaAbstrata<T> *p = new MinhaListaEncadeada<T>;
     Nodo<T> *nodo = ArvoreDeBuscaBinaria<T>::_raiz;
 
-    inOrder(nodo, p);
+    emOrdemm(nodo, p);
 
     return p;
   };
 
   ListaEncadeadaAbstrata<T> *preOrdem() const
   {
-    ListaEncadeadaAbstrata<int> *p = new MinhaListaEncadeada<int>;
+    ListaEncadeadaAbstrata<T> *p = new MinhaListaEncadeada<T>;
     Nodo<T> *nodo = ArvoreDeBuscaBinaria<T>::_raiz;
-    preOrder(nodo, p);
+    preOrdemm(nodo, p);
     return p;
   };
 
   ListaEncadeadaAbstrata<T> *posOrdem() const
   {
-    ListaEncadeadaAbstrata<int> *p = new MinhaListaEncadeada<int>;
+    ListaEncadeadaAbstrata<T> *p = new MinhaListaEncadeada<T>;
     Nodo<T> *nodo = ArvoreDeBuscaBinaria<T>::_raiz;
-    postOrder(nodo, p);
+    posOrdemm(nodo, p);
     return p;
   };
 };

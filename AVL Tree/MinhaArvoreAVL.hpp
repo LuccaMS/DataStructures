@@ -213,8 +213,6 @@ private:
             return nodo;
         }
 
-        nodo->altura = acharAltura(nodo); //atualizando a altura de todos os nodos, já que é recursivo
-
         int balanco = balanceamento(nodo); //Pegando o balanço
 
         int balanco_esquerda = balanceamento(nodo->filhoEsquerda);
@@ -271,7 +269,7 @@ public:
     ~MinhaArvoreAVL()
     {
     Nodo<T> * aux = MinhaArvoreAVL<T>::_raiz;
-    delete aux->filhoDireita;s
+    delete aux->filhoDireita;
     delete aux->filhoEsquerda;
     }
 };
