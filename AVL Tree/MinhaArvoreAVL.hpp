@@ -14,8 +14,6 @@ class MinhaArvoreAVL final : public MinhaArvoreDeBuscaBinaria<T>
 private:
     Nodo<T> *acharMinimo(Nodo<T> *nodo)
     {
-        //Essa função serve para achar a chave mínima de uma sub-tree fornecida;
-        //Usamos um simples loop, andando para direita infinitamente enquanto o filho esquerdo do próximo nodo n seja nulo.
         while (nodo->filhoEsquerda)
         {
             nodo = nodo->filhoEsquerda;
@@ -24,17 +22,11 @@ private:
         return nodo;
     }
 
-    int acharAltura(Nodo<T> *nodo) const
+    int achaAltura(Nodo<T> *nodo) const
     {
-        /*
-        Basicamente, essa função irá receber um nodo, então, chamar a achaMax mandando a mesma função com seus filhos, quando
-        um nodo é true, ela chama isso para seus filhos e assim respectivamente, então, todo nodo não nulo contará como 1 para
-        nós, a achaMax está basicamente comparando a altura de uma sub-tree esquerda e de uma sub-tree direita e retornando 
-        a mais alta, que é o nosso objetivo com a altura.
-        */
         if (nodo)
         {
-            return achaMax(acharAltura(nodo->filhoEsquerda), acharAltura(nodo->filhoDireita)) + 1;
+            return achaMax(achaAltura(nodo->filhoEsquerda), achaAltura(nodo->filhoDireita)) + 1;
         }
         else
         {
@@ -44,8 +36,6 @@ private:
 
     int achaMax(int a, int b) const
     {
-        //Note que, usamos maior ou igual, porque se dois "caminhos" tem a mesma altura, a altura é igual, tanto faz
-        //exemplo: um nodo que tem um filho a esquerda e um a direita, a altura é igual nos dois lados.
         if (a >= b)
         {
             return a;
@@ -65,10 +55,10 @@ private:
         auxiliar_1->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_2;
 
-        nodo->altura = acharAltura(nodo);
-        auxiliar_1->altura = acharAltura(auxiliar_1);
+        nodo->altura = achaAltura(nodo);
+        auxiliar_1->altura = achaAltura(auxiliar_1);
 
-        return auxiliar_1; //Retornando a nova raiz;
+        return auxiliar_1;
     };
 
     Nodo<T> *rotacaoEsquerda(Nodo<T> *nodo)
@@ -79,18 +69,41 @@ private:
         auxiliar_1->filhoEsquerda = nodo;
         nodo->filhoDireita = auxiliar_2;
 
-        nodo->altura = acharAltura(nodo);
-        auxiliar_1->altura = acharAltura(auxiliar_1);
+        nodo->altura = achaAltura(nodo);
+        auxiliar_1->altura = achaAltura(auxiliar_1);
 
         return auxiliar_1; //Retornando a nova raiz;
+    };
+
+    Nodo<T> * rotacaoEsquerdaDireita(Nodo<T> * nodo)
+    {
+        Nodo<T> * nodoesq = nodo->filhoEsquerda;
+        Nodo<T> *auxiliar_1 = nodoesq->filhoDireita;
+        Nodo<T> *auxiliar_2 = auxiliar_1->filhoEsquerda;
+
+        auxiliar_1->filhoEsquerda = nodoesq;
+        nodoesq->filhoDireita = auxiliar_2;
+
+        nodo->filhoEsquerda = auxiliar_1;
+        //Esquerda feita
+
+        Nodo<T> * auxiliar_3 = nodo->filhoEsquerda;
+        Nodo<T> * auxiliar_4 = auxiliar_3->filhoDireita;
+
+        auxiliar_3->filhoDireita = nodo;
+        nodo->filhoEsquerda = auxiliar_4;
+
+       // nodo->altura = achaAltura(nodo);
+       // auxiliar_3->altura = achaAltura(auxiliar_3);
+        
+        return auxiliar_3;
     };
 
     int balanceamento(Nodo<T> *nodo)
     {
         if (nodo)
         {
-            return acharAltura(nodo->filhoEsquerda) - acharAltura(nodo->filhoDireita);
-            //Retornando o balanceamento usando a função recursiva para achar a altura do filho esquerdo e direito;
+            return achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
         }
         return 0;
     };
@@ -104,7 +117,6 @@ private:
             novo_nodo->filhoEsquerda = NULL;
             novo_nodo->filhoDireita = NULL;
             novo_nodo->altura = 1;
-            //nodo = novo_nodo;
             return novo_nodo;
         }
 
@@ -117,9 +129,7 @@ private:
             nodo->filhoDireita = inserir(nodo->filhoDireita, chave);
         }
 
-        nodo->altura = acharAltura(nodo);
-
-        int balanco = balanceamento(nodo); //Aqui chamamos a função balaneamento para encontrar o balanço do nodo atual;
+        int balanco = balanceamento(nodo);
 
         if (balanco < -1)
         {
@@ -129,7 +139,6 @@ private:
             }
             if (chave < nodo->filhoDireita->chave)
             {
-                //Aplicando right-left
                 nodo->filhoDireita = rotacaoDireita(nodo->filhoDireita);
                 return rotacaoEsquerda(nodo);
             }
@@ -142,8 +151,9 @@ private:
             }
             if (chave > nodo->filhoEsquerda->chave)
             {
-                nodo->filhoEsquerda = rotacaoEsquerda(nodo->filhoEsquerda);
-                return rotacaoDireita(nodo);
+                //nodo->filhoEsquerda = rotacaoEsquerda(nodo->filhoEsquerda);
+                //return rotacaoDireita(nodo);
+                return rotacaoEsquerdaDireita(nodo);
             }
         }
 
@@ -154,28 +164,23 @@ private:
     {
         if (nodo == NULL)
         {
-            //é null , basicamente isso só vai acontecer se o primeiro nodo já for nulo
             return nodo;
         }
 
         if (chave < nodo->chave)
         {
             nodo->filhoEsquerda = remover(nodo->filhoEsquerda, chave);
-            //chamando a recursividade para realizar os mesmos passos aqui até chegar em null
         }
         else if (chave > nodo->chave)
         {
             nodo->filhoDireita = remover(nodo->filhoDireita, chave);
-            //chamando a recursividade para o lado direito
         }
         else
         {
             if (nodo->filhoDireita == NULL || nodo->filhoEsquerda == NULL)
             {
-                //Podemos fazer isso para uma melhor organização do código, basicamante, vai entrar aqui se um dos dois for nulo
                 if (nodo->filhoDireita == NULL && nodo->filhoEsquerda == NULL)
                 {
-                    //Aqui é o caso de uma leaf.
                     delete nodo;
                     nodo = NULL;
                     return nodo;
@@ -183,7 +188,6 @@ private:
                 else if (nodo->filhoDireita != NULL && nodo->filhoEsquerda == NULL)
                 {
                     Nodo<T> *temporario = nodo->filhoDireita;
-                    //Pegando os dados do filho nao nulo antes de deletar o pai para retornar para o avo
                     delete nodo;
                     nodo = NULL;
                     nodo = temporario;
@@ -192,7 +196,6 @@ private:
                 else if (nodo->filhoDireita == NULL && nodo->filhoEsquerda != NULL)
                 {
                     Nodo<T> *temporario = nodo->filhoEsquerda;
-                    //Pegando os dados do filho nao nulo antes de deletar o pai para retornar para o avo
                     delete nodo;
                     nodo = NULL;
                     nodo = temporario;
@@ -202,18 +205,12 @@ private:
             else
             {
                 Nodo<T> *temporario = acharMinimo(nodo->filhoDireita);
-                //Assim temos o menor nodo que ainda é maior que o nodo atual.
                 nodo->chave = temporario->chave;
                 nodo->filhoDireita = remover(nodo->filhoDireita, nodo->chave);
             }
         }
 
-        if (nodo == NULL)
-        {
-            return nodo;
-        }
-
-        int balanco = balanceamento(nodo); //Pegando o balanço
+        int balanco = balanceamento(nodo);
 
         int balanco_esquerda = balanceamento(nodo->filhoEsquerda);
 
@@ -222,22 +219,18 @@ private:
         if (balanco > 1 && balanco_esquerda >= 0)
         {
             return rotacaoDireita(nodo);
-            //Aplicando apenas right
         }
         if (balanco > 1 && balanco_esquerda < 0)
         {
             nodo->filhoEsquerda = rotacaoEsquerda(nodo->filhoEsquerda);
-            //Aplicando a left right
             return rotacaoDireita(nodo);
         }
         if (balanco < -1 && balanco_direita <= 0)
         {
             return rotacaoEsquerda(nodo);
-            //Aplicando apenas left
         }
         if (balanco < -1 && balanco_direita > 0)
         {
-            //Aplicando a right left
             nodo->filhoDireita = rotacaoDireita(nodo->filhoDireita);
             return rotacaoEsquerda(nodo);
         }
@@ -261,17 +254,6 @@ public:
         auxiliar = remover(raiz, chave);
         ArvoreDeBuscaBinaria<T>::_raiz = auxiliar;
     };
-
-    MinhaArvoreAVL()
-    {
-        MinhaArvoreAVL<T>::_raiz = NULL;
-    }
-    ~MinhaArvoreAVL()
-    {
-    Nodo<T> * aux = MinhaArvoreAVL<T>::_raiz;
-    delete aux->filhoDireita;
-    delete aux->filhoEsquerda;
-    }
 };
 
 #endif

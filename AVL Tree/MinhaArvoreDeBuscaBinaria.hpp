@@ -8,7 +8,7 @@
 template <typename T>
 class MinhaArvoreDeBuscaBinaria : public ArvoreDeBuscaBinaria<T>
 {
-private:
+protected:
   Nodo<int> *redirect(Nodo<int> *raiz, int key)
   {
     if (raiz->chave < key)
@@ -84,12 +84,25 @@ private:
     }
   };
 
+  void DestrutorRecursivo(Nodo<T> * nodo)
+  {
+    if(nodo)
+    {
+      DestrutorRecursivo(nodo->filhoEsquerda);
+      DestrutorRecursivo(nodo->filhoDireita);
+      delete nodo;
+    }
+  };
+
 public:
   MinhaArvoreDeBuscaBinaria()
   {
     ArvoreDeBuscaBinaria<T>::_raiz = NULL;
   };
-  ~MinhaArvoreDeBuscaBinaria(){};
+  ~MinhaArvoreDeBuscaBinaria(){
+    Nodo<T> * auxiliar = ArvoreDeBuscaBinaria<T>::_raiz;
+    DestrutorRecursivo(auxiliar);
+  };
 
   bool vazia() const
   {
@@ -448,7 +461,9 @@ public:
   {
     ListaEncadeadaAbstrata<T> *p = new MinhaListaEncadeada<T>;
     Nodo<T> *nodo = ArvoreDeBuscaBinaria<T>::_raiz;
+
     preOrdemm(nodo, p);
+
     return p;
   };
 
@@ -456,7 +471,9 @@ public:
   {
     ListaEncadeadaAbstrata<T> *p = new MinhaListaEncadeada<T>;
     Nodo<T> *nodo = ArvoreDeBuscaBinaria<T>::_raiz;
+
     posOrdemm(nodo, p);
+
     return p;
   };
 };
