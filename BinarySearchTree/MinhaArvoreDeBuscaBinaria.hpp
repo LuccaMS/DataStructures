@@ -95,12 +95,25 @@ private:
     }
   };
 
+  void recursiveDestructor(Nodo<T> * nodo)
+  {
+    if(nodo)
+    {
+      recursiveDestructor(nodo->filhoEsquerda);
+      recursiveDestructor(nodo->filhoDireita);
+      delete nodo;
+    }
+  }
+
 public:
   MinhaArvoreDeBuscaBinaria()
   {
     ArvoreDeBuscaBinaria<T>::_raiz = NULL;
   };
   ~MinhaArvoreDeBuscaBinaria(){
+
+     Nodo<T> * nodo = ArvoreDeBuscaBinaria<T>::_raiz;
+    recursiveDestructor(nodo);
   };
 
   bool vazia() const

@@ -192,7 +192,7 @@ public:
       {
         //Aqui verificamos se o nodo está na arvore, então, chamamos a função para calcular a altura.
         int teste = achaAltura(nodo);
-        return teste - 1;
+        return teste -1;
       }
       else if (!esta_na_arvore)
       {
