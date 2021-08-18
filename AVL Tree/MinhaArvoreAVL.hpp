@@ -12,16 +12,6 @@ template <typename T>
 class MinhaArvoreAVL final : public MinhaArvoreDeBuscaBinaria<T>
 {
 private:
-    Nodo<T> *acharMinimo(Nodo<T> *nodo)
-    {
-        while (nodo->filhoEsquerda)
-        {
-            nodo = nodo->filhoEsquerda;
-        }
-
-        return nodo;
-    }
-
     int achaAltura(Nodo<T> *nodo) const
     {
         if (nodo)
@@ -72,7 +62,7 @@ private:
         nodo->altura = achaAltura(nodo);
         auxiliar_1->altura = achaAltura(auxiliar_1);
 
-        return auxiliar_1; //Retornando a nova raiz;
+        return auxiliar_1;
     };
 
     Nodo<T> * rotacaoEsquerdaDireita(Nodo<T> * nodo)
@@ -93,9 +83,8 @@ private:
         auxiliar_3->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_4;
 
-       // nodo->altura = achaAltura(nodo);
-       // auxiliar_3->altura = achaAltura(auxiliar_3);
-        
+        //Direita feita
+
         return auxiliar_3;
     };
 
@@ -151,8 +140,6 @@ private:
             }
             if (chave > nodo->filhoEsquerda->chave)
             {
-                //nodo->filhoEsquerda = rotacaoEsquerda(nodo->filhoEsquerda);
-                //return rotacaoDireita(nodo);
                 return rotacaoEsquerdaDireita(nodo);
             }
         }
@@ -204,7 +191,13 @@ private:
             }
             else
             {
-                Nodo<T> *temporario = acharMinimo(nodo->filhoDireita);
+                Nodo<T> *temporario;
+                Nodo<T> * aux = nodo->filhoDireita;
+
+                if(aux->filhoEsquerda){aux = aux->filhoEsquerda;};
+
+                temporario = aux;
+                
                 nodo->chave = temporario->chave;
                 nodo->filhoDireita = remover(nodo->filhoDireita, nodo->chave);
             }
