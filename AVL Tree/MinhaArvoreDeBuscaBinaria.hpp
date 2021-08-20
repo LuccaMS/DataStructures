@@ -24,31 +24,34 @@ protected:
     return raiz;
   };
 
-    int achaAltura(Nodo<T> *nodo) const
+  int achaAltura(Nodo<T> *nodo) const
+  {
+    if (nodo)
     {
-        if (nodo)
-        {
-            int altura_esq = achaAltura(nodo->filhoEsquerda);
-            int altura_direita = achaAltura(nodo->filhoDireita);
-            if(altura_esq >= altura_direita)
-            {
-                return altura_esq + 1;
-            }
-            else{
-                return altura_direita + 1;
-            }
-        }
-        else
-        {
-            return 0;
-        }
-    };
+      int altura_esq = achaAltura(nodo->filhoEsquerda);
+      int altura_direita = achaAltura(nodo->filhoDireita);
+      if (altura_esq >= altura_direita)
+      {
+        return altura_esq + 1;
+      }
+      else
+      {
+        return altura_direita + 1;
+      }
+    }
+    else
+    {
+      return 0;
+    }
+  };
 
   int quantidade_de_elementos(Nodo<int> *raiz) const
   {
     if (raiz)
     {
       return 1 + quantidade_de_elementos(raiz->filhoEsquerda) + quantidade_de_elementos(raiz->filhoDireita);
+      //basicamente,sempre que o elemento for verdadeiro ele adiciona 1 a soma total, se ele for nulo não adiciona nada
+      //e como estamos usando recursividade sempre chamados essa função para os dois filhos de um nodo e assim até chegar nas leaf
     }
     else
     {
@@ -59,6 +62,7 @@ protected:
   {
     if (a)
     {
+      //Aqui sempre vamos dar prioridade para o filho mais a esquerda da árvore, adicionando ele antes de todo mundo
       emOrdemm(a->filhoEsquerda, teste);
       teste->adicionaNoFim(a->chave);
       emOrdemm(a->filhoDireita, teste);
@@ -68,25 +72,26 @@ protected:
   {
     if (a)
     {
-      posOrdemm(a->filhoEsquerda, teste);
-      posOrdemm(a->filhoDireita, teste);
+      posOrdemm(a->filhoEsquerda, teste); //vai adicionar o filho mais a esquerda de todos
+      posOrdemm(a->filhoDireita, teste); //depois vai ir para os filhos da direita em maneira recursiva se esq for null
 
-      teste->adicionaNoFim(a->chave);
+      teste->adicionaNoFim(a->chave); //quando ambos os filhos forem nulos ou já terem sido adicionados ele vai adicionar na lista
     }
   };
   void preOrdemm(Nodo<int> *a, ListaEncadeadaAbstrata<int> *teste) const
   {
     if (a)
     {
+      //Aqui sempre damos preferencia para primeiro adicionar o nodo atual depois seu filho a esquerda e assim seguindo a recursão.
       teste->adicionaNoFim(a->chave);
       preOrdemm(a->filhoEsquerda, teste);
       preOrdemm(a->filhoDireita, teste);
     }
   };
 
-  void DestrutorRecursivo(Nodo<T> * nodo)
+  void DestrutorRecursivo(Nodo<T> *nodo)
   {
-    if(nodo)
+    if (nodo)
     {
       DestrutorRecursivo(nodo->filhoEsquerda);
       DestrutorRecursivo(nodo->filhoDireita);
@@ -99,8 +104,9 @@ public:
   {
     ArvoreDeBuscaBinaria<T>::_raiz = NULL;
   };
-  ~MinhaArvoreDeBuscaBinaria(){
-    Nodo<T> * auxiliar = ArvoreDeBuscaBinaria<T>::_raiz;
+  ~MinhaArvoreDeBuscaBinaria()
+  {
+    Nodo<T> *auxiliar = ArvoreDeBuscaBinaria<T>::_raiz;
     DestrutorRecursivo(auxiliar);
   };
 
@@ -192,7 +198,7 @@ public:
       {
         //Aqui verificamos se o nodo está na arvore, então, chamamos a função para calcular a altura.
         int teste = achaAltura(nodo);
-        return teste -1;
+        return teste - 1;
       }
       else if (!esta_na_arvore)
       {
@@ -278,11 +284,11 @@ public:
         if (raiz->filhoDireita and raiz->filhoDireita->filhoEsquerda)
         {
           int chave_nova = raiz->filhoDireita->filhoEsquerda->chave;
-          delete raiz->filhoDireita->filhoEsquerda;                 
-          raiz->filhoDireita->filhoEsquerda = NULL;                 
-          raiz->chave = chave_nova;                                  
-          deletou = true;                                            
-          break;                                                    
+          delete raiz->filhoDireita->filhoEsquerda;
+          raiz->filhoDireita->filhoEsquerda = NULL;
+          raiz->chave = chave_nova;
+          deletou = true;
+          break;
         }
         else if (raiz->filhoDireita and raiz->filhoDireita->filhoDireita)
         {

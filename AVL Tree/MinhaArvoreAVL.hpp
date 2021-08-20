@@ -18,6 +18,7 @@ private:
         {
             int altura_esq = achaAltura(nodo->filhoEsquerda);
             int altura_direita = achaAltura(nodo->filhoDireita);
+
             if(altura_esq >= altura_direita)
             {
                 return altura_esq + 1;
@@ -41,9 +42,6 @@ private:
         auxiliar_1->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_2;
 
-        nodo->altura = achaAltura(nodo);
-        auxiliar_1->altura = achaAltura(auxiliar_1);
-
         return auxiliar_1;
     };
 
@@ -55,15 +53,12 @@ private:
         auxiliar_1->filhoEsquerda = nodo;
         nodo->filhoDireita = auxiliar_2;
 
-        nodo->altura = achaAltura(nodo);
-        auxiliar_1->altura = achaAltura(auxiliar_1);
-
         return auxiliar_1;
     };
 
     Nodo<T> * rotacaoEsquerdaDireita(Nodo<T> * nodo)
     {
-        Nodo<T> * nodoesq = nodo->filhoEsquerda;
+        Nodo<T> *nodoesq = nodo->filhoEsquerda;
         Nodo<T> *auxiliar_1 = nodoesq->filhoDireita;
         Nodo<T> *auxiliar_2 = auxiliar_1->filhoEsquerda;
 
@@ -84,6 +79,28 @@ private:
         return auxiliar_3;
     };
 
+    Nodo<T> * rotacaoDireitaEsquerda(Nodo<T> * nodo)
+    {
+        Nodo<T> * filho_dir = nodo->filhoDireita;
+
+        Nodo<T> * auxiliar_1 = filho_dir->filhoEsquerda;
+        
+        Nodo<T> * auxiliar_2 = filho_dir->filhoEsquerda->filhoDireita;
+
+        auxiliar_1->filhoDireita = filho_dir;
+        filho_dir->filhoEsquerda = auxiliar_2;
+
+        nodo->filhoDireita = auxiliar_1;
+
+        Nodo<T>* auxiliar_3 = nodo->filhoDireita;
+        Nodo<T>* auxiliar_4 = nodo->filhoDireita->filhoEsquerda;
+
+        auxiliar_3->filhoEsquerda = nodo;
+        nodo->filhoDireita = auxiliar_4;
+
+        return auxiliar_3;
+    }
+
     int balanceamento(Nodo<T> *nodo)
     {
         if (nodo)
@@ -99,9 +116,6 @@ private:
         {
             Nodo<T> *novo_nodo = new Nodo<T>;
             novo_nodo->chave = chave;
-            novo_nodo->filhoEsquerda = NULL;
-            novo_nodo->filhoDireita = NULL;
-            novo_nodo->altura = 1;
             return novo_nodo;
         }
 
@@ -124,8 +138,7 @@ private:
             }
             if (chave < nodo->filhoDireita->chave)
             {
-                nodo->filhoDireita = rotacaoDireita(nodo->filhoDireita);
-                return rotacaoEsquerda(nodo);
+                return rotacaoDireitaEsquerda(nodo);
             }
         }
         if (balanco > 1)
@@ -211,8 +224,7 @@ private:
         }
         if (balanco > 1 && balanco_esquerda < 0)
         {
-            nodo->filhoEsquerda = rotacaoEsquerda(nodo->filhoEsquerda);
-            return rotacaoDireita(nodo);
+            return rotacaoEsquerdaDireita(nodo);
         }
         if (balanco < -1 && balanco_direita <= 0)
         {
@@ -220,8 +232,7 @@ private:
         }
         if (balanco < -1 && balanco_direita > 0)
         {
-            nodo->filhoDireita = rotacaoDireita(nodo->filhoDireita);
-            return rotacaoEsquerda(nodo);
+            return rotacaoDireitaEsquerda(nodo);
         }
 
         return nodo;
