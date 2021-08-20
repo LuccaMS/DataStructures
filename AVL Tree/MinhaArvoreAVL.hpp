@@ -37,7 +37,7 @@ private:
     {
         Nodo<T> *auxiliar_1 = nodo->filhoEsquerda;
 
-        Nodo<T> *auxiliar_2 = auxiliar_1->filhoDireita;
+        Nodo<T> *auxiliar_2 = nodo->filhoEsquerda->filhoDireita;
 
         auxiliar_1->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_2;
@@ -48,7 +48,7 @@ private:
     Nodo<T> *rotacaoEsquerda(Nodo<T> *nodo)
     {
         Nodo<T> *auxiliar_1 = nodo->filhoDireita;
-        Nodo<T> *auxiliar_2 = auxiliar_1->filhoEsquerda;
+        Nodo<T> *auxiliar_2 = nodo->filhoDireita->filhoEsquerda;
 
         auxiliar_1->filhoEsquerda = nodo;
         nodo->filhoDireita = auxiliar_2;
@@ -60,7 +60,7 @@ private:
     {
         Nodo<T> *nodoesq = nodo->filhoEsquerda;
         Nodo<T> *auxiliar_1 = nodoesq->filhoDireita;
-        Nodo<T> *auxiliar_2 = auxiliar_1->filhoEsquerda;
+        Nodo<T> *auxiliar_2 = nodoesq->filhoDireita->filhoEsquerda;
 
         auxiliar_1->filhoEsquerda = nodoesq;
         nodoesq->filhoDireita = auxiliar_2;
@@ -69,7 +69,7 @@ private:
         //Esquerda feita
 
         Nodo<T> * auxiliar_3 = nodo->filhoEsquerda;
-        Nodo<T> * auxiliar_4 = auxiliar_3->filhoDireita;
+        Nodo<T> * auxiliar_4 = nodo->filhoEsquerda->filhoDireita;
 
         auxiliar_3->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_4;
@@ -101,15 +101,6 @@ private:
         return auxiliar_3;
     }
 
-    int balanceamento(Nodo<T> *nodo)
-    {
-        if (nodo)
-        {
-            return achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
-        }
-        return 0;
-    };
-
     Nodo<T> *inserir(Nodo<T> *nodo, int chave)
     {
         if (!nodo)
@@ -128,7 +119,7 @@ private:
             nodo->filhoDireita = inserir(nodo->filhoDireita, chave);
         }
 
-        int balanco = balanceamento(nodo);
+        int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
 
         if (balanco < -1)
         {
@@ -206,24 +197,38 @@ private:
                 if(aux->filhoEsquerda){aux = aux->filhoEsquerda;};
 
                 temporario = aux;
+                //Neste caso, basicamente estamos pegando o filho a esquerda do filho a direita e tornando a "raiz" com o mesmo nodo
+                //porque esse filho vai ser maior que todos os elementos da esquerda e ainda menor que os elementos da direita.
                 
                 nodo->chave = temporario->chave;
                 nodo->filhoDireita = remover(nodo->filhoDireita, nodo->chave);
             }
         }
 
-        int balanco = balanceamento(nodo);
+        int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
 
-        int balanco_esquerda = balanceamento(nodo->filhoEsquerda);
+        int balanco_esquerda = 0;
 
-        int balanco_direita = balanceamento(nodo->filhoDireita);
+        if(nodo->filhoEsquerda)
+        {
+            balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
+        }
+
+        int balanco_direita = 0;
+
+        if(nodo->filhoDireita)
+        {
+            balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
+        }
 
         if (balanco > 1 && balanco_esquerda >= 0)
         {
+            //Como há um desbalança na parte direita mas a parte esquerda está equilibrada rotacionamos para a direita
             return rotacaoDireita(nodo);
         }
         if (balanco > 1 && balanco_esquerda < 0)
         {
+            //Como há um desbalanço na parte direita mas a parte esquerda não está em equilibrio fazemos esquerda direita
             return rotacaoEsquerdaDireita(nodo);
         }
         if (balanco < -1 && balanco_direita <= 0)
