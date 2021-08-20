@@ -16,25 +16,21 @@ private:
     {
         if (nodo)
         {
-            return achaMax(achaAltura(nodo->filhoEsquerda), achaAltura(nodo->filhoDireita)) + 1;
+            int altura_esq = achaAltura(nodo->filhoEsquerda);
+            int altura_direita = achaAltura(nodo->filhoDireita);
+            if(altura_esq >= altura_direita)
+            {
+                return altura_esq + 1;
+            }
+            else{
+                return altura_direita + 1;
+            }
         }
         else
         {
             return 0;
         }
     };
-
-    int achaMax(int a, int b) const
-    {
-        if (a >= b)
-        {
-            return a;
-        }
-        else
-        {
-            return b;
-        }
-    }
 
     Nodo<T> *rotacaoDireita(Nodo<T> *nodo)
     {
