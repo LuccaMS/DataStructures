@@ -19,11 +19,12 @@ private:
             int altura_esq = achaAltura(nodo->filhoEsquerda);
             int altura_direita = achaAltura(nodo->filhoDireita);
 
-            if(altura_esq >= altura_direita)
+            if (altura_esq >= altura_direita)
             {
                 return altura_esq + 1;
             }
-            else{
+            else
+            {
                 return altura_direita + 1;
             }
         }
@@ -56,7 +57,7 @@ private:
         return auxiliar_1;
     };
 
-    Nodo<T> * rotacaoEsquerdaDireita(Nodo<T> * nodo)
+    Nodo<T> *rotacaoEsquerdaDireita(Nodo<T> *nodo)
     {
         Nodo<T> *nodoesq = nodo->filhoEsquerda;
         Nodo<T> *auxiliar_1 = nodoesq->filhoDireita;
@@ -68,8 +69,8 @@ private:
         nodo->filhoEsquerda = auxiliar_1;
         //Esquerda feita
 
-        Nodo<T> * auxiliar_3 = nodo->filhoEsquerda;
-        Nodo<T> * auxiliar_4 = nodo->filhoEsquerda->filhoDireita;
+        Nodo<T> *auxiliar_3 = nodo->filhoEsquerda;
+        Nodo<T> *auxiliar_4 = nodo->filhoEsquerda->filhoDireita;
 
         auxiliar_3->filhoDireita = nodo;
         nodo->filhoEsquerda = auxiliar_4;
@@ -79,21 +80,21 @@ private:
         return auxiliar_3;
     };
 
-    Nodo<T> * rotacaoDireitaEsquerda(Nodo<T> * nodo)
+    Nodo<T> *rotacaoDireitaEsquerda(Nodo<T> *nodo)
     {
-        Nodo<T> * filho_dir = nodo->filhoDireita;
+        Nodo<T> *filho_dir = nodo->filhoDireita;
 
-        Nodo<T> * auxiliar_1 = filho_dir->filhoEsquerda;
-        
-        Nodo<T> * auxiliar_2 = filho_dir->filhoEsquerda->filhoDireita;
+        Nodo<T> *auxiliar_1 = filho_dir->filhoEsquerda;
+
+        Nodo<T> *auxiliar_2 = filho_dir->filhoEsquerda->filhoDireita;
 
         auxiliar_1->filhoDireita = filho_dir;
         filho_dir->filhoEsquerda = auxiliar_2;
 
         nodo->filhoDireita = auxiliar_1;
 
-        Nodo<T>* auxiliar_3 = nodo->filhoDireita;
-        Nodo<T>* auxiliar_4 = nodo->filhoDireita->filhoEsquerda;
+        Nodo<T> *auxiliar_3 = nodo->filhoDireita;
+        Nodo<T> *auxiliar_4 = nodo->filhoDireita->filhoEsquerda;
 
         auxiliar_3->filhoEsquerda = nodo;
         nodo->filhoDireita = auxiliar_4;
@@ -164,42 +165,44 @@ private:
         }
         else
         {
-            if (nodo->filhoDireita == NULL || nodo->filhoEsquerda == NULL)
+
+            if (nodo->filhoDireita == NULL && nodo->filhoEsquerda == NULL)
             {
-                if (nodo->filhoDireita == NULL && nodo->filhoEsquerda == NULL)
-                {
-                    delete nodo;
-                    nodo = NULL;
-                    return nodo;
-                }
-                else if (nodo->filhoDireita != NULL && nodo->filhoEsquerda == NULL)
-                {
-                    Nodo<T> *temporario = nodo->filhoDireita;
-                    delete nodo;
-                    nodo = NULL;
-                    nodo = temporario;
-                    return nodo;
-                }
-                else if (nodo->filhoDireita == NULL && nodo->filhoEsquerda != NULL)
-                {
-                    Nodo<T> *temporario = nodo->filhoEsquerda;
-                    delete nodo;
-                    nodo = NULL;
-                    nodo = temporario;
-                    return nodo;
-                }
+                delete nodo;
+                nodo = NULL;
+                return nodo;
             }
+            else if (nodo->filhoDireita != NULL && nodo->filhoEsquerda == NULL)
+            {
+                Nodo<T> *temporario = nodo->filhoDireita;
+                delete nodo;
+                nodo = NULL;
+                nodo = temporario;
+                return nodo;
+            }
+            else if (nodo->filhoDireita == NULL && nodo->filhoEsquerda != NULL)
+            {
+                Nodo<T> *temporario = nodo->filhoEsquerda;
+                delete nodo;
+                nodo = NULL;
+                nodo = temporario;
+                return nodo;
+            }
+
             else
             {
                 Nodo<T> *temporario;
-                Nodo<T> * aux = nodo->filhoDireita;
+                Nodo<T> *aux = nodo->filhoDireita;
 
-                if(aux->filhoEsquerda){aux = aux->filhoEsquerda;};
+                if (aux->filhoEsquerda)
+                {
+                    aux = aux->filhoEsquerda;
+                };
 
                 temporario = aux;
                 //Neste caso, basicamente estamos pegando o filho a esquerda do filho a direita e tornando a "raiz" com o mesmo nodo
                 //porque esse filho vai ser maior que todos os elementos da esquerda e ainda menor que os elementos da direita.
-                
+
                 nodo->chave = temporario->chave;
                 nodo->filhoDireita = remover(nodo->filhoDireita, nodo->chave);
             }
@@ -209,14 +212,14 @@ private:
 
         int balanco_esquerda = 0;
 
-        if(nodo->filhoEsquerda)
+        if (nodo->filhoEsquerda)
         {
             balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
         }
 
         int balanco_direita = 0;
 
-        if(nodo->filhoDireita)
+        if (nodo->filhoDireita)
         {
             balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
         }
