@@ -34,6 +34,50 @@ private:
         }
     };
 
+    Nodo<T> * funcaoBalanco(Nodo<T> * nodo)
+    {
+        int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
+
+        int balanco_esquerda = 0;
+
+        if (nodo->filhoEsquerda)
+        {
+            balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
+        }
+
+        int balanco_direita = 0;
+
+        if (nodo->filhoDireita)
+        {
+            balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
+        }
+
+        if (balanco < -1)
+        {
+            if (balanco_direita <= 0)
+            {
+                return rotacaoEsquerda(nodo);
+            }
+            if (balanco_direita > 0)
+            {
+                return rotacaoDireitaEsquerda(nodo);
+            }
+        }
+        if (balanco > 1)
+        {
+            if (balanco_esquerda >= 0)
+            {
+                return rotacaoDireita(nodo);
+            }
+            if (balanco_esquerda < 0)
+            {
+                return rotacaoEsquerdaDireita(nodo);
+            }
+        }
+
+        return nullptr;
+    };
+
     Nodo<T> *rotacaoDireita(Nodo<T> *nodo)
     {
         Nodo<T> *auxiliar = nodo->filhoEsquerda;
@@ -118,46 +162,14 @@ private:
         {
             nodo->filhoDireita = inserir(nodo->filhoDireita, chave);
         }
+        
+        Nodo<T> * teste = funcaoBalanco(nodo);
 
-        int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
-
-        int balanco_esquerda = 0;
-
-        if (nodo->filhoEsquerda)
+        if(teste)
         {
-            balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
+            return teste;
         }
-
-        int balanco_direita = 0;
-
-        if (nodo->filhoDireita)
-        {
-            balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
-        }
-
-        if (balanco < -1)
-        {
-            if (balanco_direita <= 0)
-            {
-                return rotacaoEsquerda(nodo);
-            }
-            if (balanco_direita > 0)
-            {
-                return rotacaoDireitaEsquerda(nodo);
-            }
-        }
-        if (balanco > 1)
-        {
-            if (balanco_esquerda >= 0)
-            {
-                return rotacaoDireita(nodo);
-            }
-            if (balanco_esquerda < 0)
-            {
-                return rotacaoEsquerdaDireita(nodo);
-            }
-        }
-
+     
         return nodo;
     };
 
@@ -219,43 +231,11 @@ private:
             }
         }
 
-        int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
-
-        int balanco_esquerda = 0;
-
-        if (nodo->filhoEsquerda)
+        Nodo<T> * teste = funcaoBalanco(nodo);
+        
+        if(teste)
         {
-            balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
-        }
-
-        int balanco_direita = 0;
-
-        if (nodo->filhoDireita)
-        {
-            balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
-        }
-
-        if (balanco > 1)
-        {
-             if(balanco_esquerda >= 0)
-             {
-                 return rotacaoDireita(nodo);
-             }
-             if(balanco_esquerda < 0)
-             {
-                 return rotacaoEsquerdaDireita(nodo);
-             }
-        }
-        if(balanco < -1)
-        {
-            if(balanco_direita <= 0)
-            {
-                return rotacaoEsquerda(nodo);
-            }
-            if(balanco_direita > 0)
-            {
-                return rotacaoDireitaEsquerda(nodo);
-            }
+            return teste;
         }
 
         return nodo;
