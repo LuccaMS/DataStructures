@@ -121,24 +121,38 @@ private:
 
         int balanco = achaAltura(nodo->filhoEsquerda) - achaAltura(nodo->filhoDireita);
 
+        int balanco_esquerda = 0;
+
+        if (nodo->filhoEsquerda)
+        {
+            balanco_esquerda = achaAltura(nodo->filhoEsquerda->filhoEsquerda) - achaAltura(nodo->filhoEsquerda->filhoDireita);
+        }
+
+        int balanco_direita = 0;
+
+        if (nodo->filhoDireita)
+        {
+            balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
+        }
+
         if (balanco < -1)
         {
-            if (chave > nodo->filhoDireita->chave)
+            if (balanco_direita <= 0)
             {
                 return rotacaoEsquerda(nodo);
             }
-            if (chave < nodo->filhoDireita->chave)
+            if (balanco_direita > 0)
             {
                 return rotacaoDireitaEsquerda(nodo);
             }
         }
         if (balanco > 1)
         {
-            if (chave < nodo->filhoEsquerda->chave)
+            if (balanco_esquerda >= 0)
             {
                 return rotacaoDireita(nodo);
             }
-            if (chave > nodo->filhoEsquerda->chave)
+            if (balanco_esquerda < 0)
             {
                 return rotacaoEsquerdaDireita(nodo);
             }
@@ -221,23 +235,27 @@ private:
             balanco_direita = achaAltura(nodo->filhoDireita->filhoEsquerda) - achaAltura(nodo->filhoDireita->filhoDireita);
         }
 
-        if (balanco > 1 && balanco_esquerda >= 0)
+        if (balanco > 1)
         {
-            //Como há um desbalança na parte direita mas a parte esquerda está equilibrada rotacionamos para a direita
-            return rotacaoDireita(nodo);
+             if(balanco_esquerda >= 0)
+             {
+                 return rotacaoDireita(nodo);
+             }
+             if(balanco_esquerda < 0)
+             {
+                 return rotacaoEsquerdaDireita(nodo);
+             }
         }
-        if (balanco > 1 && balanco_esquerda < 0)
+        if(balanco < -1)
         {
-            //Como há um desbalanço na parte direita mas a parte esquerda não está em equilibrio fazemos esquerda direita
-            return rotacaoEsquerdaDireita(nodo);
-        }
-        if (balanco < -1 && balanco_direita <= 0)
-        {
-            return rotacaoEsquerda(nodo);
-        }
-        if (balanco < -1 && balanco_direita > 0)
-        {
-            return rotacaoDireitaEsquerda(nodo);
+            if(balanco_direita <= 0)
+            {
+                return rotacaoEsquerda(nodo);
+            }
+            if(balanco_direita > 0)
+            {
+                return rotacaoDireitaEsquerda(nodo);
+            }
         }
 
         return nodo;
