@@ -36,25 +36,24 @@ private:
 
     Nodo<T> *rotacaoDireita(Nodo<T> *nodo)
     {
-        Nodo<T> *auxiliar_1 = nodo->filhoEsquerda;
+        Nodo<T> *auxiliar = nodo->filhoEsquerda;
 
-        Nodo<T> *auxiliar_2 = nodo->filhoEsquerda->filhoDireita;
+        nodo->filhoEsquerda = auxiliar->filhoDireita;
 
-        auxiliar_1->filhoDireita = nodo;
-        nodo->filhoEsquerda = auxiliar_2;
+        auxiliar->filhoDireita = nodo;
 
-        return auxiliar_1;
+        return auxiliar;
     };
 
     Nodo<T> *rotacaoEsquerda(Nodo<T> *nodo)
     {
-        Nodo<T> *auxiliar_1 = nodo->filhoDireita;
-        Nodo<T> *auxiliar_2 = nodo->filhoDireita->filhoEsquerda;
+        Nodo<T> *auxiliar = nodo->filhoDireita;
 
-        auxiliar_1->filhoEsquerda = nodo;
-        nodo->filhoDireita = auxiliar_2;
+        nodo->filhoDireita = auxiliar->filhoEsquerda;
 
-        return auxiliar_1;
+        auxiliar->filhoEsquerda = nodo;
+
+        return auxiliar;
     };
 
     Nodo<T> *rotacaoEsquerdaDireita(Nodo<T> *nodo)
@@ -165,7 +164,6 @@ private:
         }
         else
         {
-
             if (nodo->filhoDireita == NULL && nodo->filhoEsquerda == NULL)
             {
                 delete nodo;
@@ -188,7 +186,6 @@ private:
                 nodo = temporario;
                 return nodo;
             }
-
             else
             {
                 Nodo<T> *temporario;
@@ -248,7 +245,7 @@ private:
 
 public:
     void inserir(T chave) override
-    {
+    { 
         Nodo<T> *raiz = ArvoreDeBuscaBinaria<T>::_raiz;
         Nodo<T> *auxiliar = ArvoreDeBuscaBinaria<T>::_raiz;
         auxiliar = inserir(raiz, chave);
