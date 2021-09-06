@@ -241,6 +241,8 @@ private:
         return nodo;
     };
 
+    
+
 public:
     void inserir(T chave) override
     { 
