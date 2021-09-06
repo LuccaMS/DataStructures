@@ -35,9 +35,15 @@ public:
 
   void remover(T dado) override
   {
-    size_t indice = funcaoEspalhamento(dado);
-    int posicao_do_dado_na_lista = this->_tabela.at(indice).posicao(dado);
-    this->_tabela.at(indice).retiraDaPosicao(posicao_do_dado_na_lista);
+    if(contem(dado))
+    {
+      size_t indice = funcaoEspalhamento(dado);
+      int posicao_do_dado_na_lista = this->_tabela.at(indice).posicao(dado);
+      this->_tabela.at(indice).retiraDaPosicao(posicao_do_dado_na_lista);
+    }
+    else{
+      throw ExcecaoDadoInexistente();
+    }
   }
 
   bool contem(T dado) const override
@@ -63,21 +69,22 @@ public:
   }
   std::size_t funcaoEspalhamento(T dado) const override
   {
-    size_t aux = capacidade();  //capacity of the hash table
-    int qtd_indice = capacidade(); //capacity of the hash table
+    size_t aux = capacidade();  
+    size_t qtd_indice = capacidade(); 
     if constexpr(!std::is_integral<T>::value){
-      int somatorio = 0; //sum of the convertion to int
-      int expo = -1;  //the exponential of the method
+      size_t somatorio = 0; 
+      int expo = 1;  
       for(unsigned int i = 0; i < dado.length();i++)
       {
-        somatorio += pow(dado[i]*31,qtd_indice - expo); //incrementing each conversion of int 
-        expo--; 
+        int conversao = int(dado[i]);
+        somatorio += conversao*pow(31,dado.length() - expo); 
+        expo++; 
       }
-      size_t indice_esperado = somatorio % aux; //finding the expected indice of the data in the hash table
-      return indice_esperado; //returning the expected indice
+      size_t indice_esperado = somatorio % aux; 
+      return indice_esperado; 
     }
     else{
-      size_t indice_esperado = dado % aux;  // here i'm doing the same thing but the data is a integer so 
+      size_t indice_esperado = dado % aux;  
       return indice_esperado;
     }
   }
