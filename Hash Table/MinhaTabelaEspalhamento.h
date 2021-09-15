@@ -48,12 +48,10 @@ public:
 
   bool contem(T dado) const override
   {
-    for (unsigned int i = 0; i < this->_tabela.size(); i++)
+    int indice_esperado = funcaoEspalhamento(dado);
+    if(this->_tabela.at(indice_esperado).contem(dado))
     {
-      if (this->_tabela.at(i).contem(dado))
-      {
-        return true;
-      }
+      return true;
     }
     return false;
   }
