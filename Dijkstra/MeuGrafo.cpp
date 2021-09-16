@@ -36,6 +36,10 @@ MeuGrafo::MeuGrafo(MatrizAdjacencia const &matrizAdjacencia) : GrafoAbstrato(mat
                 {
                     throw ExcecaoCustoNegativo();
                 }
+                if (i == j && this->_matrizAdjacencia.at(i).at(j) != inf && this->_matrizAdjacencia.at(i).at(j) > 0)
+                {
+                    throw ExcecaoVerticeComLaco();
+                }
             }
         }
         std::vector<int> vec = {};
@@ -82,6 +86,9 @@ std::size_t MeuGrafo::quantidadeVertices() const
     int count = 0;
     for (unsigned int i = 0; i < this->_matrizAdjacencia.size(); i++)
     {
+        if (this->_matrizAdjacencia.at(i).at(0) == 0)
+        {
+        }
         count++;
     }
     return count;
@@ -89,19 +96,33 @@ std::size_t MeuGrafo::quantidadeVertices() const
 
 std::vector<double> MeuGrafo::menoresDistancias(std::size_t origem) const
 {
+    if (origem > (this->_matrizAdjacencia.size() - 1))
+    {
+        throw ExcecaoVerticeInvalido();
+    }
+
+    std::vector<double> teste = {};
+    teste.at(origem) = inf;
+
     return {};
 }
 
 std::size_t MeuGrafo::quantidadeArestas(std::size_t v) const
 {
-    int count = 0;
-    for (unsigned int i = 0; i < this->_matrizAdjacencia.size(); i++)
+    if (v > (this->_matrizAdjacencia.size() - 1))
     {
-        for (unsigned int j = 0; j < this->_matrizAdjacencia.at(i).size(); i++)
+        throw ExcecaoVerticeInvalido();
+    }
+
+    int count = 0;
+    for (unsigned int i = 0; i < this->_matrizAdjacencia.at(v).size(); i++)
+    {
+        if (this->_matrizAdjacencia.at(v).at(i) != inf)
         {
             count++;
         }
     }
+
     return count;
 };
 
@@ -110,9 +131,12 @@ std::size_t MeuGrafo::quantidadeArestas() const
     int count = 0;
     for (unsigned int i = 0; i < this->_matrizAdjacencia.size(); i++)
     {
-        for (unsigned int j = 0; j < this->_matrizAdjacencia.at(i).size(); i++)
+        for (unsigned int j = 0; j < this->_matrizAdjacencia.at(i).size(); j++)
         {
-            count++;
+            if (this->_matrizAdjacencia.at(i).at(j) != inf)
+            {
+                count++;
+            }
         }
     }
     return count;
@@ -120,9 +144,20 @@ std::size_t MeuGrafo::quantidadeArestas() const
 
 double MeuGrafo::custo(std::size_t origem, std::size_t destino) const
 {
-    if (this->_matrizAdjacencia.at(origem).at(destino) < 0)
+    int size = this->_matrizAdjacencia.size() - 1;
+
+    if (destino > size || origem > size)
+    {
+        throw ExcecaoVerticeInvalido();
+    }
+    else if (this->_matrizAdjacencia.at(origem).at(destino) < 0)
     {
         throw ExcecaoCustoNegativo();
     }
+    else if (origem == destino)
+    {
+        return inf;
+    }
+
     return this->_matrizAdjacencia.at(origem).at(destino);
 };

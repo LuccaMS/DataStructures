@@ -17,10 +17,10 @@ class MinhaTabelaEspalhamento final : public TabelaEspalhamentoAbstrata<T, _capa
 public:
   MinhaTabelaEspalhamento(){
 
-  };
+  }
   ~MinhaTabelaEspalhamento(){
 
-  };
+  }
 
   std::size_t capacidade() const override
   {

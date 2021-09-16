@@ -89,7 +89,7 @@ public:
      * \p origem).
      */
     virtual std::vector<double> menoresDistancias(std::size_t origem) const = 0;
-
+ 
 protected:
     MatrizAdjacencia _matrizAdjacencia;
 };
