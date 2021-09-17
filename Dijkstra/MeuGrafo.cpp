@@ -20,6 +20,21 @@
 // ExcecaoVerticeInvalido
 
 //implente aqui
+double distanciaMinima(std::vector<double> distancias, std::vector<bool> vetorVisitados)
+{
+    int min = INT_MAX;
+    double index_minimo;
+    for (int i = 0; i < distancias.size(); i++)
+    {
+        if (vetorVisitados.at(i) == false and distancias.at(i) <= min)
+        {
+            min = distancias.at(i);
+            index_minimo = i;
+        }
+    }
+    return index_minimo;
+};
+
 MeuGrafo::MeuGrafo(MatrizAdjacencia const &matrizAdjacencia) : GrafoAbstrato(matrizAdjacencia)
 {
     if (this->_matrizAdjacencia.size() <= 0)
@@ -96,111 +111,50 @@ std::size_t MeuGrafo::quantidadeVertices() const
 
 std::vector<double> MeuGrafo::menoresDistancias(std::size_t origem) const
 {
-    int a = this->_matrizAdjacencia.size();
-    if (origem > (a - 1))
+    if (origem > (this->_matrizAdjacencia.size() - 1))
     {
-        throw ExcecaoVerticeInvalido(); //execação
+        throw ExcecaoVerticeInvalido(); 
     }
     else
     {
-        std::vector<double> teste = {};
+        std::vector<double> distancias = {};
+
+        std::vector<bool> vecbool = {};
+
+        distancias.resize(this->_matrizAdjacencia.size());
+
+        vecbool.resize(this->_matrizAdjacencia.size());
+
         for (int i = 0; i < this->_matrizAdjacencia.size(); i++)
         {
-            teste.push_back(0); //garantindo o tamanho correto
+            vecbool.at(i) = false;
+            distancias.at(i) = inf;
         }
 
-        bool sao_todos_inf = true;
+        distancias.at(origem) = 0;
 
-        for (int i = 0; i < this->_matrizAdjacencia.at(origem).size(); i++)
+        for (int indice = 0; indice < this->_matrizAdjacencia.size(); indice++)
         {
-            if (this->_matrizAdjacencia.at(origem).at(i) != inf)
-            {
-                sao_todos_inf = false;
-                break;
-            }
-        }
 
-        if(sao_todos_inf)
-        {
-            for(int i = 0; i < teste.size();i++)
+            double v = distanciaMinima(distancias, vecbool);
+
+            vecbool.at(v) = true;
+
+            for (int j = 0; j < this->_matrizAdjacencia.size(); j++)
             {
-                if(i == origem)
+                if(!vecbool.at(j))
                 {
-                    teste.at(i) = 0;
-                }
-                else{
-                    teste.at(i) = inf;
-                }
-            }
-            return teste;
-        }
-
-
-        int valor = 0;
-
-        for (unsigned int i = 0; i < this->_matrizAdjacencia.at(origem).size(); i++)
-        {
-            if (origem == i)
-            {
-                teste.at(i) = 0;
-            }
-            else
-            {
-                if (this->_matrizAdjacencia.at(origem).at(i) == inf && i > 1)
-                {
-                   // valor = teste.at(i - 1) + this->custo(i - 1, i);
-                    bool aux = (teste.at(i - 1) + this->custo(i - 1, i)) < (teste.at(i - 2) + this->custo(i - 2, i));
-                    if(aux)
+                    if(distancias.at(v) != inf)
                     {
-                        valor = teste.at(i - 1) + this->custo(i - 1, i);
-                    }
-                    else{
-                        valor = teste.at(i - 2) + this->custo(i - 2, i);
-                    }
-                    teste.at(i) = valor;
-                }
-                else if (this->_matrizAdjacencia.at(origem).at(i) == inf && i == 0)
-                {
-                    std::vector<int> auxiliar = {};
-                    for(int i = 0; i >= 0 && i < this->_matrizAdjacencia.size(); i++)
-                    {
-                        auxiliar.push_back(500);
-                    }
-                    for(int i = 0; i < this->_matrizAdjacencia.size(); i++)
-                    {
-                        if(i == origem)
+                        if((distancias.at(v) + this->_matrizAdjacencia.at(v).at(j)) < distancias.at(j))
                         {
-
-                        }
-                        else{
-                            if(this->_matrizAdjacencia.at(i).at(origem) != inf)
-                            {
-                                auxiliar.at(i) = this->custo(i,origem);
-                            }
+                            distancias.at(j) = distancias.at(v) + this->_matrizAdjacencia.at(v).at(j);
                         }
                     }
-                    int position = 0;
-                    int min = auxiliar.at(0);
-                    for(int i = 0; i < auxiliar.size(); i++)
-                    {
-                        if(auxiliar.at(i) < min)
-                        {
-                            min = auxiliar.at(i);
-                            position = i;
-                        }
-                    }
-
-                    teste.at(position) = min;
-                }
-                else
-                {
-                    valor = this->custo(origem, i);
-                    teste.at(i) = valor;
                 }
             }
         }
-
-        return teste;
+        return distancias;
     }
 }
 
