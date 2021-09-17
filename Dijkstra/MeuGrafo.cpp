@@ -1,7 +1,7 @@
 #include "MeuGrafo.h"
 // MeuGrafo
 #include <algorithm>
-
+#include <queue>
 #include <cstddef>
 // std::size_t
 #include <iterator>
@@ -96,15 +96,112 @@ std::size_t MeuGrafo::quantidadeVertices() const
 
 std::vector<double> MeuGrafo::menoresDistancias(std::size_t origem) const
 {
-    if (origem > (this->_matrizAdjacencia.size() - 1))
+    int a = this->_matrizAdjacencia.size();
+    if (origem > (a - 1))
     {
-        throw ExcecaoVerticeInvalido();
+        throw ExcecaoVerticeInvalido(); //execação
     }
+    else
+    {
+        std::vector<double> teste = {};
+        for (int i = 0; i < this->_matrizAdjacencia.size(); i++)
+        {
+            teste.push_back(0); //garantindo o tamanho correto
+        }
 
-    std::vector<double> teste = {};
-    teste.at(origem) = inf;
+        bool sao_todos_inf = true;
 
-    return {};
+        for (int i = 0; i < this->_matrizAdjacencia.at(origem).size(); i++)
+        {
+            if (this->_matrizAdjacencia.at(origem).at(i) != inf)
+            {
+                sao_todos_inf = false;
+                break;
+            }
+        }
+
+        if(sao_todos_inf)
+        {
+            for(int i = 0; i < teste.size();i++)
+            {
+                if(i == origem)
+                {
+                    teste.at(i) = 0;
+                }
+                else{
+                    teste.at(i) = inf;
+                }
+            }
+            return teste;
+        }
+
+
+        int valor = 0;
+
+        for (unsigned int i = 0; i < this->_matrizAdjacencia.at(origem).size(); i++)
+        {
+            if (origem == i)
+            {
+                teste.at(i) = 0;
+            }
+            else
+            {
+                if (this->_matrizAdjacencia.at(origem).at(i) == inf && i > 1)
+                {
+                   // valor = teste.at(i - 1) + this->custo(i - 1, i);
+                    bool aux = (teste.at(i - 1) + this->custo(i - 1, i)) < (teste.at(i - 2) + this->custo(i - 2, i));
+                    if(aux)
+                    {
+                        valor = teste.at(i - 1) + this->custo(i - 1, i);
+                    }
+                    else{
+                        valor = teste.at(i - 2) + this->custo(i - 2, i);
+                    }
+                    teste.at(i) = valor;
+                }
+                else if (this->_matrizAdjacencia.at(origem).at(i) == inf && i == 0)
+                {
+                    std::vector<int> auxiliar = {};
+                    for(int i = 0; i >= 0 && i < this->_matrizAdjacencia.size(); i++)
+                    {
+                        auxiliar.push_back(500);
+                    }
+                    for(int i = 0; i < this->_matrizAdjacencia.size(); i++)
+                    {
+                        if(i == origem)
+                        {
+
+                        }
+                        else{
+                            if(this->_matrizAdjacencia.at(i).at(origem) != inf)
+                            {
+                                auxiliar.at(i) = this->custo(i,origem);
+                            }
+                        }
+                    }
+                    int position = 0;
+                    int min = auxiliar.at(0);
+                    for(int i = 0; i < auxiliar.size(); i++)
+                    {
+                        if(auxiliar.at(i) < min)
+                        {
+                            min = auxiliar.at(i);
+                            position = i;
+                        }
+                    }
+
+                    teste.at(position) = min;
+                }
+                else
+                {
+                    valor = this->custo(origem, i);
+                    teste.at(i) = valor;
+                }
+            }
+        }
+
+        return teste;
+    }
 }
 
 std::size_t MeuGrafo::quantidadeArestas(std::size_t v) const
