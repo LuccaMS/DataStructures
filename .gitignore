@@ -1,2 +1,4 @@
 .vscode
 testVpl.exe
+launch.json
+task.json
