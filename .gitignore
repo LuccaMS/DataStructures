@@ -2,3 +2,5 @@
 testVpl.exe
 launch.json
 task.json
+auto-commit-script.sh
+auto-commit.py
